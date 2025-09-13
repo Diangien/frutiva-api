@@ -29,8 +29,8 @@ export class InMemoryUsersRepository implements UsersRepository{
         return user || null;
     }
 
-    async findMany(){
-        return this.users;
+    async getAll(page:number){
+        return this.users.slice((page - 1) * 20, page*20);
     }
     
 }

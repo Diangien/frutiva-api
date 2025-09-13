@@ -3,8 +3,11 @@ import { Prisma, User } from "generated/prisma";
 import { UsersRepository } from "../users-repository";
 
 export class PrismaUsersRepository implements UsersRepository{
-    async findMany() {
-        const users = await prisma.user.findMany()
+    async getAll(page:number) {
+        const users = await prisma.user.findMany({
+           take: 20,
+           skip: (page - 1) * 20
+        })
 
         return users;
     }
