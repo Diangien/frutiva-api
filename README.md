@@ -2,7 +2,7 @@
 
 O sistema deve ser capaz de
 
-- [ ]  Deve ser possível cadastrar um utilizador
+- [x]  Deve ser possível cadastrar um utilizador
 - [ ]  Deve ser possível visualizar utilizadores do sistema
 - [ ]  Deve ser possível bloquear um utilizador
 - [ ]  Criar um novo produto para empresa
@@ -19,7 +19,7 @@ O sistema deve ser capaz de
 
 ## Regras de Negócio (RN)
 
-- [ ]  Um utilizador tem que estar associado a um departamento: Estoque, Vendas, Administração
+- [x]  Um utilizador tem que estar associado a um departamento: Estoque, Vendas, Administração
 - [ ]  Um produto só será vendido se a quantidade for superior a quantidade de segurança
 - [ ]  Na visualização, será mostrada as quantidades disponíveis
 - [ ]  O histórico de vendas será exibido por clientes e atendentes de caixa
@@ -28,4 +28,4 @@ O sistema deve ser capaz de
 ## Requisitos Não Funcionais (RNF)
 
 - [ ]  O utilizador deverá ser identificado por um jwt em todas as requisições
-- [ ]  As senhas devem ser criptografadas
+- [x]  As senhas devem ser criptografadas

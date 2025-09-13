@@ -1,8 +1,6 @@
 import fastify from "fastify";
+import { userRoutes } from "./http/routes/users.js";
 
 export const app = fastify();
 
-app.get("/hello", (request, reply) => {
-  return reply.status(200).send({message: "Seja Bem Vindo ao Frutiva"})
-});
-
+app.register(userRoutes, { prefix: "/users" });
