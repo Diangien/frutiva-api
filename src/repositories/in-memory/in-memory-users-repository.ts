@@ -2,6 +2,7 @@ import { Prisma, User } from "generated/prisma";
 import { UsersRepository } from "../users-repository";
 
 export class InMemoryUsersRepository implements UsersRepository{
+    
     private users: User[] = [];
 
     async create(data: Prisma.UserCreateInput){
@@ -26,6 +27,10 @@ export class InMemoryUsersRepository implements UsersRepository{
         const user = this.users.find(user => user.name == username);
 
         return user || null;
+    }
+
+    async findMany(){
+        return this.users;
     }
     
 }
