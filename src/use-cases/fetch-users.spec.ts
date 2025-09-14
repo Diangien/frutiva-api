@@ -24,7 +24,6 @@ describe("Fetch users use case", () => {
     }
 
     const { users } = await sut.execute({page: 2});
-    console.log(users)
 
     expect(users).toHaveLength(2);
     expect(users).toEqual([

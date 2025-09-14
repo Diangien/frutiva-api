@@ -20,16 +20,55 @@ enum UserPrivilege {
   stock
 }
 
+enum UnitType {
+  unit
+  kilo
+}
+
 model User {
   id            String        @id @default(uuid())
   name          String        @unique
-  full_name     String        
+  full_name     String
   email         String?       @unique
   phone         String
   password_hash String
   picture       String?
   created_at    DateTime      @default(now())
   privilege     UserPrivilege @default(sales)
+  Product       Product[]
 
   @@map("tb_users")
+}
+
+model Product {
+  id              String   @id @default(uuid())
+  bar_code        String   @unique
+  name            String
+  description     String?
+  unit_type       UnitType @default(unit)
+  selling_price   Decimal
+  buying_price    Decimal
+  active          Boolean  @default(true)
+  expiration_days Int
+  picture_url     String?
+  created_at      DateTime @default(now())
+
+  created_by User @relation(fields: [userId], references: [id])
+
+  category_id Category @relation(fields: [categoryId], references: [id])
+
+  userId     String
+  categoryId String
+
+  @@map("tb_produts")
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String @unique
+  color String @default("#ffffff3d")
+
+  Product Product[]
+
+  @@map("tb_category")
 }
