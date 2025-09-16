@@ -2,16 +2,16 @@ import { makeFetchUsersUseCase } from "@/use-cases/factories/make-fetch-users-us
 import { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
 
-export async function Fetch(request:FastifyRequest, reply:FastifyReply){
+export async function Fetch(request: FastifyRequest, reply: FastifyReply) {
+  const fetchBodySchema = z.object({
+    page: z.coerce.number(),
+  });
+  //console.log("err");
+    console.log(request.body);
+  const { page } = fetchBodySchema.parse(request.query);
 
-    const fetchBodySchema = z.object({
-        page: z.coerce.number()
-    })
+  const useCase = makeFetchUsersUseCase();
+  const { users } = await useCase.execute({ page });
 
-    const { page } = fetchBodySchema.parse(request.body);
-
-    const useCase = makeFetchUsersUseCase()
-    const { users } = await useCase.execute({ page })
-
-    return reply.status(200).send({users})
+  return reply.status(200).send({ users });
 }

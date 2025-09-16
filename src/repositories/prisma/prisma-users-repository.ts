@@ -29,4 +29,15 @@ export class PrismaUsersRepository implements UsersRepository{
 
         return user || null;
     }
+
+    async findById(id: string) {
+        //console.log("Find By ID In Category In Usrs");
+        const user = await prisma.user.findUnique({
+            where:{
+                id
+            }
+        });
+
+        return user || null;
+    }
 }

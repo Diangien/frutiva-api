@@ -16,7 +16,11 @@ export async function create(request: FastifyRequest, reply: FastifyReply) {
 
     await useCase.execute(dados);
   } catch (error) {
-    return reply.status(409).send();
+     if (error instanceof Error) {
+      return reply.status(409).send({ message: error.message });
+    }
+    
+    throw error
   }
 
   return reply.status(200).send({

@@ -14,14 +14,16 @@ export async function register(request: FastifyRequest, reply: FastifyReply) {
   const { name, full_name, password, phone, privilege } = registerBodySchema.parse(request.body);
 
   try {
-    const useCase = makeRegisterUseCase()
+    const useCase = makeRegisterUseCase();
 
     await useCase.execute({ full_name, name, password, phone, privilege });
   } catch (error) {
-    return reply.status(409).send();
+    if (error instanceof Error) {
+      return reply.status(409).send({ message: error.message });
+    }
+
+    throw error;
   }
 
-  return reply.status(200).send({
-    message: "User created!",
-  });
+  return reply.status(201).send();
 }

@@ -7,7 +7,7 @@ export class InMemoryCategorysRepository implements CategoriesRepository {
 
   async create(data: Prisma.CategoryCreateInput) {
     const category: Category = {
-      id: crypto.randomUUID(),
+      id: data.id ?? crypto.randomUUID(),
       name: data.name,
       color: data.color ?? this.defaultColor,
     };
@@ -31,6 +31,12 @@ export class InMemoryCategorysRepository implements CategoriesRepository {
 
   async findByName(name: string) {
     const category =  this.categories.find(cat => cat.name == name);
+
+    return category || null;
+  }
+
+  async findById(id: string) {
+     const category =  this.categories.find(cat => cat.id == id);
 
     return category || null;
   }

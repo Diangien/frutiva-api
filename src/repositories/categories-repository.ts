@@ -10,4 +10,5 @@ export interface CategoriesRepository{
     update(id:string,data: Prisma.CategoryUpdateInput | CategoriesRepository):Promise<Category>;
     list(page:number):Promise<Category[]>;
     findByName(name:string):Promise<Category | null>;
+    findById(id: string):Promise<Category | null>;
 }
