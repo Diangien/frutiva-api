@@ -25,6 +25,12 @@ enum UnitType {
   kilo
 }
 
+enum StockStatus {
+  available
+  expired
+  blocked
+}
+
 model User {
   id            String        @id @default(uuid())
   name          String        @unique
@@ -41,17 +47,17 @@ model User {
 }
 
 model Product {
-  id              String   @id @default(uuid())
-  bar_code        String   @unique
-  name            String   @unique
-  description     String?
-  unit_type       UnitType @default(unit)
-  selling_price   Decimal
-  buying_price    Decimal
-  active          Boolean  @default(true)
-  expiration_days Int
-  picture_url     String?
-  created_at      DateTime @default(now())
+  id             String   @id @default(uuid())
+  barCode        String   @unique
+  name           String   @unique
+  description    String?
+  unitType       UnitType @default(unit)
+  sellingPrice   Decimal
+  buyingPrice    Decimal
+  active         Boolean  @default(true)
+  expirationDays Int
+  pictureUrl     String?
+  createdAt      DateTime @default(now())
 
   created_by User @relation(fields: [userId], references: [id])
 
@@ -71,4 +77,39 @@ model Category {
   Product Product[]
 
   @@map("tb_category")
+}
+
+model Supplier {
+  id           String   @id @default(uuid())
+  name         String   @unique
+  nickname     String   @unique
+  nif          String   @unique
+  phone        String
+  email        String   @unique
+  active       Boolean  @default(true)
+  address      String
+  city         String
+  observations String?
+  created_at   DateTime @default(now())
+  Stock        Stock[]
+
+  @@map("tb_supplier")
+}
+
+model Stock {
+  id               String      @id @default(uuid())
+  lote             String      @unique
+  currentQuantity  Int
+  minimumQquantity Int
+  entryDate        DateTime
+  expirationDate   DateTime
+  purchasePrice    Decimal
+  status           StockStatus @default(available)
+  location         String
+  observations     String
+  createdAt        DateTime    @default(now())
+  id_supplier      Supplier    @relation(fields: [supplierId], references: [id])
+  supplierId       String
+
+  @@map("tb_stock")
 }

@@ -8,8 +8,8 @@ export class PrismaProductsRepository implements ProductsRepository {
     return product;
   }
 
-  async findByBarCode(barcode: string) {
-    const product = await prisma.product.findUnique({ where: { bar_code: barcode } });
+  async findByBarCode(barCode: string) {
+    const product = await prisma.product.findUnique({ where: { barCode } });
 
     return product;
   }

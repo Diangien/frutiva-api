@@ -31,47 +31,33 @@ export class CreateProductUseCase{
         private categoriesRepository:CategoriesRepository,
         private usersRepository:UsersRepository){}
 
-    async execute({barCode,name,buyingPrice,categoryId,expirationDays,sellingPrice,unitType,userId,description, pictureUrl}:CreateProductUseCaseRequest):Promise<CreateProductUseCaseResponse>{
+    async execute(data:CreateProductUseCaseRequest):Promise<CreateProductUseCaseResponse>{
 
-        const productWithSameBarCode = await this.productsRepository.findByBarCode(barCode);
+        const productWithSameBarCode = await this.productsRepository.findByBarCode(data.barCode);
 
         if(productWithSameBarCode){
             throw new BarCodeAlreadyExistsError();
         }
 
-        const productWithSameName = await this.productsRepository.findByName(name);
+        const productWithSameName = await this.productsRepository.findByName(data.name);
 
         if(productWithSameName){
             throw new ProductNameAlreadyExistsError();
         }
 
-        const category = await this.categoriesRepository.findById(categoryId);
+        const category = await this.categoriesRepository.findById(data.categoryId);
 
         if(!category){
             throw new ResourceNotFoundError();
         }
         
-        const user = await this.usersRepository.findById(userId);
+        const user = await this.usersRepository.findById(data.userId);
 
         if(!user){
             throw new ResourceNotFoundError();
         }
         
-
-        
-
-        const product = await this.productsRepository.create({
-            bar_code: barCode,
-            name,
-            buying_price: buyingPrice,
-            selling_price: sellingPrice,
-            categoryId,
-            userId,
-            expiration_days: expirationDays,
-            description: description,
-            unit_type:unitType,
-            picture_url: pictureUrl
-        })
+        const product = await this.productsRepository.create(data);
 
         return { product }
         

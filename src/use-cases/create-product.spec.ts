@@ -35,9 +35,6 @@ describe("Create Product Use Case", ()=>{
 
     it("should be able to create a product", async()=>{
 
-        
-       
-
         const { product } = await sut.execute({
             barCode: "1234",
             buyingPrice: 1000,
@@ -57,12 +54,12 @@ describe("Create Product Use Case", ()=>{
     it("should be not able to create a product in twice with same barcode", async()=>{
 
         productsRepository.create({
-            bar_code: "1234",
-            buying_price: 1000,
-            selling_price:2000,
+            barCode: "1234",
+            buyingPrice: 1000,
+            sellingPrice:2000,
             name:"Maca",
-            unit_type:"unit",
-            expiration_days:10,
+            unitType:"unit",
+            expirationDays:10,
             description:"Maca muito doce",
             userId: 'user-01',
             categoryId: 'category-01'
@@ -85,13 +82,13 @@ describe("Create Product Use Case", ()=>{
     it("should be not able to create a product in twice with same name", async()=>{
 
         productsRepository.create({
-            bar_code: "1234",
+            barCode: "1234",
             name:"Maca",
-            buying_price: 1000,
-            selling_price:2000,
+            buyingPrice: 1000,
+            sellingPrice:2000,
             
-            unit_type:"unit",
-            expiration_days:10,
+            unitType:"unit",
+            expirationDays:10,
             description:"Maca muito doce",
             userId: 'user-01',
             categoryId: 'category-01'
@@ -111,6 +108,4 @@ describe("Create Product Use Case", ()=>{
             pictureUrl:""
         })).rejects.toBeInstanceOf(Error);
     })
-
-   
 })

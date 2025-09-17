@@ -7,17 +7,17 @@ export class InMemoryProductsRepository implements ProductsRepository {
     const product: Product = {
       id: data.id ?? crypto.randomUUID(),
       name: data.name,
-      bar_code: data.bar_code,
-      buying_price: new Prisma.Decimal(data.buying_price.toString()),
-      selling_price: new Prisma.Decimal(data.selling_price.toString()),
+      barCode: data.barCode,
+      buyingPrice: new Prisma.Decimal(data.buyingPrice.toString()),
+      sellingPrice: new Prisma.Decimal(data.sellingPrice.toString()),
       categoryId: data.categoryId,
-      created_at: new Date(),
+      createdAt: new Date(),
       description: data.description ?? null,
-      expiration_days: data.expiration_days,
-      unit_type: data.unit_type!,
+      expirationDays: data.expirationDays,
+      unitType: data.unitType!,
       userId: data.userId,
       active: false,
-      picture_url: data.picture_url ?? null,
+      pictureUrl: data.pictureUrl ?? null,
     };
 
     this.products.push(product);
@@ -25,8 +25,8 @@ export class InMemoryProductsRepository implements ProductsRepository {
     return product;
   }
 
-  async findByBarCode(barcode: string) {
-    const product = this.products.find((product) => product.bar_code == barcode);
+  async findByBarCode(barCode: string) {
+    const product = this.products.find((product) => product.barCode == barCode);
 
     return product || null;
   }
