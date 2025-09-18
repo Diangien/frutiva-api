@@ -42,6 +42,7 @@ model User {
   created_at    DateTime      @default(now())
   privilege     UserPrivilege @default(sales)
   Product       Product[]
+  Stock         Stock[]
 
   @@map("tb_users")
 }
@@ -65,6 +66,7 @@ model Product {
 
   userId     String
   categoryId String
+  Stock      Stock[]
 
   @@map("tb_produts")
 }
@@ -98,9 +100,10 @@ model Supplier {
 
 model Stock {
   id               String      @id @default(uuid())
-  lote             String      @unique
-  currentQuantity  Int
-  minimumQquantity Int
+  batch            String      @unique
+  initialQuantity  Int
+  currentQuantity  Int         @default(0)
+  minimumQuantity Int         
   entryDate        DateTime
   expirationDate   DateTime
   purchasePrice    Decimal
@@ -110,6 +113,10 @@ model Stock {
   createdAt        DateTime    @default(now())
   id_supplier      Supplier    @relation(fields: [supplierId], references: [id])
   supplierId       String
+  createdBy        User        @relation(fields: [userId], references: [id])
+  userId           String
+  produto_id       Product     @relation(fields: [productId], references: [id])
+  productId        String
 
   @@map("tb_stock")
 }

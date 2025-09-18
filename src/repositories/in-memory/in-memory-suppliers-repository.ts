@@ -5,7 +5,7 @@ export class InMemorySuppliersRepository implements SuppliersRepository {
   private suppliers: Supplier[] = [];
   async create(data: Prisma.SupplierCreateInput) {
     const supplier: Supplier = {
-      id: crypto.randomUUID(),
+      id:  data.id ?? crypto.randomUUID(),
       name: data.name,
       nickname: data.nickname,
       email: data.email,

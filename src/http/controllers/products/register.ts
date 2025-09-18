@@ -1,5 +1,3 @@
-import { BarCodeAlreadyExistsError } from "@/use-cases/errors/bar-code-already-exists-error";
-import { ProductNameAlreadyExistsError } from "@/use-cases/errors/product-name-already-exists-error";
 import { makeCreateProductsUseCase } from "@/use-cases/factories/make-create-product-use-case";
 import { FastifyReply, FastifyRequest } from "fastify";
 import z from "zod";
@@ -30,8 +28,6 @@ export async function Register(request: FastifyRequest, reply: FastifyReply) {
     description,
     pictureUrl,
   } = registerBodySchema.parse(request.body);
-
-  console.log(categoryId)
 
   try {
     const useCase = makeCreateProductsUseCase();
