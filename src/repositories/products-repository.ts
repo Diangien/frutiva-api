@@ -5,5 +5,5 @@ export interface ProductsRepository{
     findByBarCode(barCode: string):Promise<Product | null>;
     findByName(name: string):Promise<Product | null>;
     findById(id: string):Promise<Product | null>;
-
+    addQuantity(id: string, quantity:number):Promise<void>
 }

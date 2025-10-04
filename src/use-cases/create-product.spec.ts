@@ -62,7 +62,8 @@ describe("Create Product Use Case", ()=>{
             expirationDays:10,
             description:"Maca muito doce",
             userId: 'user-01',
-            categoryId: 'category-01'
+            categoryId: 'category-01',
+            minimumQuantity:10
         })
 
         await expect(sut.execute({
@@ -91,7 +92,8 @@ describe("Create Product Use Case", ()=>{
             expirationDays:10,
             description:"Maca muito doce",
             userId: 'user-01',
-            categoryId: 'category-01'
+            categoryId: 'category-01',
+            minimumQuantity:10
         })
 
         await expect(sut.execute({

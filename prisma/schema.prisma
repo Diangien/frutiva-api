@@ -4,6 +4,13 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+/**
+ * Tabelas com ID NUMBER
+ * StockMovement
+ * Sale
+ * SaleITEM
+ */
+
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -31,30 +38,49 @@ enum StockStatus {
   blocked
 }
 
+enum PaymentType {
+  money
+  debit_card
+  credit_card
+  express
+}
+
+enum MovementType {
+  entry
+  exit //Venda
+  loss //Perda (Vencimento)
+}
+
 model User {
-  id            String        @id @default(uuid())
-  name          String        @unique
+  id            String          @id @default(uuid())
+  name          String          @unique
   full_name     String
-  email         String?       @unique
+  email         String?         @unique
   phone         String
   password_hash String
   picture       String?
-  created_at    DateTime      @default(now())
-  privilege     UserPrivilege @default(sales)
+  created_at    DateTime        @default(now())
+  privilege     UserPrivilege   @default(sales)
   Product       Product[]
   Stock         Stock[]
+  Sale          Sale[]
+  StockMovement StockMovement[]
 
   @@map("tb_users")
 }
 
 model Product {
-  id             String   @id @default(uuid())
-  barCode        String   @unique
-  name           String   @unique
-  description    String?
-  unitType       UnitType @default(unit)
-  sellingPrice   Decimal
-  buyingPrice    Decimal
+  id           String   @id @default(uuid())
+  barCode      String   @unique
+  name         String   @unique
+  description  String?
+  unitType     UnitType @default(unit)
+  sellingPrice Decimal
+  buyingPrice  Decimal
+
+  totalQuantity   Int   @default(0)
+  minimumQuantity Int
+
   active         Boolean  @default(true)
   expirationDays Int
   pictureUrl     String?
@@ -64,9 +90,11 @@ model Product {
 
   category_id Category @relation(fields: [categoryId], references: [id])
 
-  userId     String
-  categoryId String
-  Stock      Stock[]
+  userId        String
+  categoryId    String
+  Stock         Stock[]
+  Sale_Item     SaleItem[]
+  StockMovement StockMovement[]
 
   @@map("tb_produts")
 }
@@ -82,41 +110,131 @@ model Category {
 }
 
 model Supplier {
-  id           String   @id @default(uuid())
-  name         String   @unique
-  nickname     String   @unique
-  nif          String   @unique
-  phone        String
-  email        String   @unique
-  active       Boolean  @default(true)
-  address      String
-  city         String
-  observations String?
-  created_at   DateTime @default(now())
-  Stock        Stock[]
+  id            String          @id @default(uuid())
+  name          String          @unique
+  nickname      String          @unique
+  nif           String          @unique
+  phone         String
+  email         String          @unique
+  active        Boolean         @default(true)
+  address       String
+  city          String
+  observations  String?
+  created_at    DateTime        @default(now())
+  Stock         Stock[]
+  StockMovement StockMovement[]
 
   @@map("tb_supplier")
 }
 
 model Stock {
-  id               String      @id @default(uuid())
-  batch            String      @unique
-  initialQuantity  Int
-  currentQuantity  Int         @default(0)
-  minimumQuantity Int         
-  entryDate        DateTime
-  expirationDate   DateTime
-  purchasePrice    Decimal
-  status           StockStatus @default(available)
-  location         String
-  observations     String
-  createdAt        DateTime    @default(now())
-  id_supplier      Supplier    @relation(fields: [supplierId], references: [id])
-  supplierId       String
-  createdBy        User        @relation(fields: [userId], references: [id])
-  userId           String
-  produto_id       Product     @relation(fields: [productId], references: [id])
-  productId        String
+  id              Int             @id @default(autoincrement())
+  batch           String          @unique
+  initialQuantity Int
+  currentQuantity Int             @default(0) //After Seilling
+  entryDate       DateTime
+  expirationDate  DateTime
+  purchasePrice   Decimal
+  status          StockStatus     @default(available)
+  location        String
+  observations    String
+  createdAt       DateTime        @default(now())
+  id_supplier     Supplier        @relation(fields: [supplierId], references: [id])
+  supplierId      String
+  createdBy       User            @relation(fields: [userId], references: [id])
+  userId          String
+  produto_id      Product         @relation(fields: [productId], references: [id])
+  productId       String
+  Sale_Item       SaleItem[]
+  StockMovement   StockMovement[]
 
   @@map("tb_stock")
+}
+
+model Sale {
+  id            Int         @id @default(autoincrement())
+  saleNumber    Int         @default(autoincrement())
+  saleDate      DateTime    @default(now())
+  subTotal      Decimal
+  totalDiscount Decimal     @default(0)
+  totalAmount   Decimal
+  PaymentType   PaymentType
+  amountPaid    Decimal
+  change        Decimal //Troco
+
+  user_id       User            @relation(fields: [userId], references: [id])
+  userId        String
+  Sale_Item     SaleItem[]
+  StockMovement StockMovement[]
+
+  @@map("tb_sales")
+}
+
+model SaleItem {
+  /**
+   * id (PK)
+   * - venda_id (FK)
+   * - produto_id (FK)
+   * - quantidade
+   * - preco_unitario
+   * - desconto_item
+   * - subtotal_item
+   * - lote
+   */
+  id           Int     @id @default(autoincrement())
+  quantity     Int
+  unitPrice    Decimal
+  itemDiscount Decimal @default(0)
+  itemSubTotal Decimal
+  batch        Stock   @relation(fields: [stockId], references: [id])
+  sale_id      Sale    @relation(fields: [saleId], references: [id])
+  product_id   Product @relation(fields: [productId], references: [id])
+  stockId      Int
+  saleId       Int
+  productId    String
+
+  @@map("tb_sale_item")
+}
+
+model StockMovement {
+  /**
+   * - id (PK)
+   * - produto_id (FK)
+   * - tipo_movimentacao (entrada, saida, ajuste, perda)
+   * - quantidade
+   * - quantidade_anterior
+   * - quantidade_atual
+   * - motivo
+   * - data_movimentacao
+   * - usuario_id (FK)
+   * - venda_id (FK) -- se for saída por venda
+   * - fornecedor_id (FK) -- se for entrada
+   * - preco_unitario
+   * - valor_total
+   * - lote
+   * - observacoes
+   */
+
+  id               Int          @id @default(autoincrement())
+  movementType     MovementType
+  quantity         Int
+  previousQuantity Int
+  currentQuantity  Int
+  movementDate     DateTime     @default(now())
+  reasion          String       @default("")
+  unitPrice        Decimal
+  totalAmount      Decimal
+  stock_id         Stock        @relation(fields: [stockId], references: [id])
+  product_id       Product      @relation(fields: [productId], references: [id])
+  supplier_id      Supplier?    @relation(fields: [supplierId], references: [id])
+  user_id          User         @relation(fields: [userId], references: [id])
+  sale_id          Sale?        @relation(fields: [saleId], references: [id])
+
+  stockId    Int
+  productId  String
+  supplierId String?
+  userId     String
+  saleId     Int?
+
+  @@map("tb_stock_moviment")
 }

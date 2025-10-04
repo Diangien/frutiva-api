@@ -1,11 +1,12 @@
 import { Prisma, Stock } from "generated/prisma";
 import { StockRepository } from "../stock-repository";
+import { generateId } from "@/utils/generate-id";
 
 export class InMemoryStockRepository implements StockRepository{
     private stocks:Stock[] = []
     async create(data: Prisma.StockUncheckedCreateInput) {
         const stock:Stock = {
-            id: data.id ?? crypto.randomUUID(),
+            id: data.id ?? generateId(),
             batch:data.batch,
             initialQuantity:data.initialQuantity,
             createdAt: new Date(),
@@ -13,7 +14,6 @@ export class InMemoryStockRepository implements StockRepository{
             entryDate:new Date(data.entryDate),
             expirationDate: new Date(data.expirationDate),
             location:data.location,
-            minimumQuantity:data.minimumQuantity,
             observations: data.observations,
             purchasePrice: new Prisma.Decimal(data.purchasePrice.toString()),
             status: data.status || "available",

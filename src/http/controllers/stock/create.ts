@@ -15,10 +15,8 @@ interface CreateStockUseCaseRequest{
 export async function Create(request: FastifyRequest, reply: FastifyReply) {
   const bodySchema = z.object({
     batch: z.string().nonempty(),
-    initialQuantity: z.coerce.number(),
-    minimumQuantity: z.coerce.number(),
+    quantity: z.coerce.number(),
     entryDate: z.coerce.date().default(new Date()),
-    expirationDate: z.coerce.date(),
     location: z.string().default("no-location"),
     purchasePrice: z.coerce.number(),
     observations: z.string().default("no-observation"),
@@ -31,7 +29,6 @@ export async function Create(request: FastifyRequest, reply: FastifyReply) {
   const data = bodySchema.parse(request.body);
 
   try {
-
     const useCase = makeCreateStockUseCase();
     await useCase.execute(data)
   } catch (error) {

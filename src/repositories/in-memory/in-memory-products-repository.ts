@@ -18,6 +18,8 @@ export class InMemoryProductsRepository implements ProductsRepository {
       userId: data.userId,
       active: false,
       pictureUrl: data.pictureUrl ?? null,
+      totalQuantity: 0,
+      minimumQuantity: data.minimumQuantity,
     };
 
     this.products.push(product);
@@ -37,9 +39,15 @@ export class InMemoryProductsRepository implements ProductsRepository {
     return product || null;
   }
 
-  async findById(id: string){
+  async findById(id: string) {
     const product = this.products.find((product) => product.id == id);
 
     return product || null;
+  }
+
+  async addQuantity(id: string, quantity: number) {
+    const productIndex = this.products.findIndex((product) => product.id == id);
+
+    this.products[productIndex].totalQuantity += quantity;
   }
 }

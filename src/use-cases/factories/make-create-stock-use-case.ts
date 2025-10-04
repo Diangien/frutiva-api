@@ -5,13 +5,15 @@ import { PrismaStockRepository } from "@/repositories/prisma/prisma-stock-reposi
 import { PrismaSuppliersRepository } from "@/repositories/prisma/prisma-suppliers-repository";
 import { PrismaUsersRepository } from "@/repositories/prisma/prisma-users-repository";
 import { CreateStockUseCase } from "../create-stock";
+import { PrismaStockMovementRepository } from "@/repositories/prisma/prisma-stock-movement-repository";
 
 export function makeCreateStockUseCase(){
     const stockRepository = new PrismaStockRepository();
     const suppliersRepository =new PrismaSuppliersRepository();
     const productsRepository = new PrismaProductsRepository();
     const usersRepository = new PrismaUsersRepository();
-    const useCase = new CreateStockUseCase(stockRepository,suppliersRepository, usersRepository, productsRepository);
+    const stockMovementRepository = new PrismaStockMovementRepository()
+    const useCase = new CreateStockUseCase(stockRepository,suppliersRepository, usersRepository, productsRepository, stockMovementRepository);
 
     return useCase;
 }
