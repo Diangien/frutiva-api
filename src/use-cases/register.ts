@@ -11,17 +11,18 @@ interface registerUseCaseRequest {
   password: string;
   phone: string;
   privilege: UserPrivilege;
+  email:string;
 }
 
 export class RegisterUseCase {
   constructor(private usersRepository: UsersRepository) {}
 
-  async execute({ full_name, name, password, phone, privilege }: registerUseCaseRequest) {
+  async execute({ full_name, name, password, phone, privilege, email}: registerUseCaseRequest) {
     const password_hash = await hash(password, 6);
 
-    const userWithSameName = await this.usersRepository.findByUserName(name);
+    const userWithSameEmail = await this.usersRepository.findByEmail(email);
 
-    if (userWithSameName) {
+    if (userWithSameEmail) {
       throw new UserNameAlreadyExistsError();
     }
 
@@ -31,6 +32,7 @@ export class RegisterUseCase {
       phone,
       privilege,
       name,
+      email
     });
 
     return {

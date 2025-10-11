@@ -5,4 +5,5 @@ export interface UsersRepository{
     findByUserName(username: string):Promise<User | null>;
     getAll(page:number):Promise<User[]>;
     findById(id: string):Promise<User | null>;
+    findByEmail(email:string):Promise<User | null>;
 }
